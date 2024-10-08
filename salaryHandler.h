@@ -41,9 +41,8 @@ private:
     // Вообще, их можно было сделать публичными, т к все равно их не изменишь
     // Но, если эти константы никогда не будут использоваться за пределами этого класса,
     // то лучше и вправду оставить их приватными
-    const unsigned int TRIAL_COST { 500 };
-    const unsigned int LESSON_COST { 350 };
-    const unsigned int INDIV_COST { 450 };
+
+    const unsigned int lessonsCost[LessonType::count] {500, 350, 450};
 
     // Я сделал ее приватной, т к она используется только внутри класса и пользователю класса не нужна
     int writeLessonInfoToFile(std::string date, LessonType type);
