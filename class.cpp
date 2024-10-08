@@ -25,12 +25,13 @@ public:
     }
 
     void salaryin(){
+
         string date {};
         int input{};
+        cin.clear();
         cout << "дата и время формата дд:мм чч:мм: ";
         getline(cin, date);
-        cout << "выбери урок: " << endl << "1. пробный" << endl << "2. урок" << endl << "3. индивидуальное" << endl << "выбор: ";
-        cin.ignore('\n');
+        cout << endl << "выбери урок: " << endl << "1. пробный" << endl << "2. урок" << endl << "3. индивидуальное" << endl << "выбор: ";
         cin >> input;
         cin.clear();
         switch (input)
@@ -52,7 +53,7 @@ public:
 // сделать запись общей суммы за месяц в бинарный файл
 // сделать помесячный учет полной суммы через бинарные файлы
 // делать объекты на каждый месяц
-
+private:
     int data_in(string date, l_type type){
         int f = 0;
         fstream out;

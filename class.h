@@ -7,8 +7,13 @@
 #include <ctime>
 #include <fstream>
 
-using namespace std;
-using namespace chrono;
+using std::cout;
+using std::cin;
+using std::endl;
+using std::string;
+using std::ios;
+using std::fstream;
+using namespace std::chrono;
 
 enum l_type {trial, lesson, indiv};
 
