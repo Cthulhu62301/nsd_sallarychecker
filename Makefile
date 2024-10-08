@@ -1,7 +1,5 @@
-
-
 all:
-	g++ -Wall -Werror -Wextra class.cpp main.cpp -o ./start.out
+	g++ -Wall -Werror -Wextra salaryHandler.cpp main.cpp -o ./start.out
 
 rebuild: clean all
 	./start.out

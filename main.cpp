@@ -1,15 +1,11 @@
-#include "class.h"
-#include "class.cpp"
-#include <string>
+#include "salaryHandler.h"
 
+int main()
+{
+    SalaryHandler salaryHandler { };
 
+    salaryHandler.printLocalTime();
+    salaryHandler.writeUserLessonInfo();
 
-
-int main(){
-    
-    salary test{};
-
-    test.showday();
-    test.salaryin();
     return 0;
 }
