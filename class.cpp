@@ -21,7 +21,7 @@ public:
 
 
         cout << "local time: " << dt << endl;
-        cout << "time now: " << ltm->tm_hour << ':' << ltm->tm_min << ':' << ltm->tm_sec << endl;
+        cout << "time now: " << ltm->tm_hour << ':' << ltm->tm_min << ':' << ltm->tm_sec << endl << endl;
     }
 
     void salaryin(){
@@ -30,6 +30,7 @@ public:
         cout << "дата и время формата дд:мм чч:мм: ";
         getline(cin, date);
         cout << "выбери урок: " << endl << "1. пробный" << endl << "2. урок" << endl << "3. индивидуальное" << endl << "выбор: ";
+        cin.ignore('\n');
         cin >> input;
         cin.clear();
         switch (input)
