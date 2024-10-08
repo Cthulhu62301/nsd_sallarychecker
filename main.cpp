@@ -1,41 +1,32 @@
-#include "class.h"
-#include "class.cpp"
-#include <string>
+#include "salaryHandler.h"
 
 
+int main()
+{
+    SalaryHandler salaryHandler { };
+    salaryHandler.printLocalTime();
 
-
-int main(){
-    
-    salary test{};
-    int f {0};
-    test.showday();
+    int shouldExit; 
+    char userChoise;
     do {
-        f = 0;
-        int in {};
-        cout << "1. обновить время" << endl <<  "2. внести урок" << endl << "0. выход" << endl << "Выберите опцию: ";
-        cin >> in;
-        switch (in){
-        case 1:
-            cout << endl;
-            test.showday();
-            f = 1;
-            break;
-        case 2:
-            cout << endl;
-            cin.clear();
-            test.salaryin();
-            f = 1;
-            break;
-        default:
-            f = 1;
-            cout << endl << "Введите корректную опцию" << endl << endl << endl;
-            cin.clear();
-            cin.ignore(1000, '\n');
-        }
-        
+        shouldExit = 0;
 
-    }
-    while (f == 1);
+        std::cout << "1. обновить время\n2. внести урок\nq. выход\nВыберите опцию: ";
+        std::cin >> userChoise;
+        std::cout << '\n';
+        switch (userChoise)
+        {
+            case 'q': shouldExit = 1; break;
+            case '1': salaryHandler.printLocalTime(); break;
+            case '2': salaryHandler.writeUserLessonInfo(); break;
+
+            default:
+                std::cout << "Введите корректную опцию \n\n" << std::endl;
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                break;
+        }
+    } while (!shouldExit);
+
     return 0;
 }
