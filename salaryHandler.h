@@ -47,12 +47,13 @@ class SalaryHandler
 public:
     void printLocalTime();
     void writeUserLessonInfo();
-    int readLessonInfo();
+    int readUserLessonInfo();
 
 private:
     
     const unsigned int lessonsCost[LessonType::count] {500, 350, 450};
 
+    int readLessonInfoFromFile(int l_pos);
     int writeLessonInfoToFile(std::string date, LessonType type);
     void encryptData();
 };

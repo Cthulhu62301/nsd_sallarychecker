@@ -10,7 +10,7 @@ int main()
     char userChoise;
     do {
         shouldExit = 0;
-        std::cout << "1. обновить время\n2. внести урок\nq. выход\nВыберите опцию: ";
+        std::cout << "1. обновить время\n2. внести урок\n3. просмотреть уроки\nq. выход\nВыберите опцию: ";
         std::cin >> userChoise;
         std::cout << '\n';
         switch (userChoise)
@@ -25,7 +25,7 @@ int main()
                 salaryHandler.writeUserLessonInfo(); 
                 break;
             case '3':
-                salaryHandler.readLessonInfo();
+                salaryHandler.readUserLessonInfo();
                 break;
             default:
                 std::cout << "Введите корректную опцию \n\n" << std::endl;
