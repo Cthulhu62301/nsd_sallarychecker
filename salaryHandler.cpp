@@ -48,13 +48,35 @@ int SalaryHandler::writeLessonInfoToFile(std::string date, LessonType lessonType
     
     dataFile << date << ' ';
     if (lessonType == LessonType::trial)
-        dataFile << "пробный " << lessonsCost[static_cast<int>(trial)];
+        dataFile << "пробный " << lessonsCost[trial];
     else if (lessonType == LessonType::lesson)
-        dataFile << "урок " << lessonsCost[static_cast<int>(lesson)];
+        dataFile << "урок " << lessonsCost[lesson];
     else if (lessonType == LessonType::indiv)
-        dataFile << "индив " << lessonsCost[static_cast<int>(indiv)];
+        dataFile << "индив " << lessonsCost[indiv];
     dataFile << '\n';
 
     dataFile.close();
     return 0;
 }
+
+int SalaryHandler::readLessonInfo(){
+    std::ifstream dataFile("maindata.txt", std::ios::in);
+    if(!dataFile.is_open()) return 0;
+    int count {3};
+    int i {0};
+    std::string output{};
+    // char out_c[30];
+    // dataFile >> output;
+    while (getline(dataFile, output)){
+        if (i == count)std::cout << output << '\n';
+        i++;
+    }
+    // printf("%s\nlen: %ld\n", out_c, strlen(out_c));
+    dataFile.close();
+    return 0;
+}
+
+void SalaryHandler::encryptData() {
+    //TODO: придумать архетиктуру файла данных
+}
+

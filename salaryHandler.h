@@ -10,7 +10,12 @@
 #include <fstream>
 #include <chrono>
 #include <string>
+#include <cstring>
 #include <ctime>
+#include <stdio.h>
+#include <vector>
+#include <openssl/evp.h>
+#include <openssl/des.h>
 
 
 enum LessonType
@@ -21,16 +26,33 @@ enum LessonType
     count, 
 };
 
+enum Month
+{
+    Jan = 1,
+    Feb,
+    Mar,
+    Apr,
+    May,
+    Jun,
+    Jul,
+    Sep,
+    Oct,
+    Nov,
+    Dec,
+};
+
 
 class SalaryHandler
 {
 public:
     void printLocalTime();
     void writeUserLessonInfo();
+    int readLessonInfo();
 
 private:
     
     const unsigned int lessonsCost[LessonType::count] {500, 350, 450};
 
     int writeLessonInfoToFile(std::string date, LessonType type);
+    void encryptData();
 };
