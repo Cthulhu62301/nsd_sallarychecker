@@ -41,6 +41,15 @@ enum Month
     Dec,
 };
 
+struct Lesson
+{
+    Lesson (int number, Month mon, std::string date, LessonType type, unsigned int cost):number{number}, mon{mon}, date{date}, type{type}, cost{cost}{}
+    int number;
+    Month mon;
+    std::string date;
+    LessonType type;
+    unsigned int cost;
+};
 
 class SalaryHandler
 {
@@ -52,8 +61,14 @@ public:
 private:
     
     const unsigned int lessonsCost[LessonType::count] {500, 350, 450};
-
+    // bool readValid = [](int count, int in) { return (in > count || in < 1);};
+    bool (*callback)(int, int);
+    void setCallback(bool(*fn)(int, int));
     int readLessonInfoFromFile(int l_pos);
+    void console_in(int& var, int count, bool (*callback)(int, int));
+    void console_in(int& var, bool(*callback)(int));
     int writeLessonInfoToFile(std::string date, LessonType type);
     void encryptData();
 };
+bool validReadCk(int count, int in);
+bool validInCk(int in);

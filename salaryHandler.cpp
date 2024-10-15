@@ -24,16 +24,16 @@ void SalaryHandler::writeUserLessonInfo()
     // Использовать std::endl не круто, т к он принудительно очищает буфер, что немного замедляет терминал
     // Лучше его не использовать, если нет на то везких причин
     // (Например, тебе надо быть уверенным, что ошибка выведется, перед тем, как прога крашнится)
-    std::cout << "выбери урок: \n1. пробный\n2. урок\n3. индивидуальное\nвыбор: ";
-    int input { }; 
-    std::cin >> input;
-    std::cin.clear(); 
-
-    if (input >= 1 && input <= LessonType::count) 
+    std::cout << "выбери урок: \n1. пробный\n2. урок\n3. индивидуальное\n0. выйти в меню\nвыбор: ";
+    int input { };
+    console_in(input, validInCk); 
+    if (input == 0);
+    else if (input != 0) 
         writeLessonInfoToFile(date, static_cast<LessonType>(input - 1)); 
-    else 
-        std::cout << "Incorrect input!" << std::endl;
 }
+
+bool validInCk(int in){return !(in  >= 0 && in  <= LessonType::count);}
+
 
 
 // TODO: запись общей суммы за месяц в бинарный файл
@@ -74,24 +74,48 @@ int SalaryHandler::readUserLessonInfo(){
     data_count.close();
     std::cout << "количество записей: " << count << '\n';
     std::cout << "выберете номер записи: ";
-    int f {};
     std::cin.clear();
-    do {
-        f = 0;
-        std::cin >> data_pos;
-        if (std::cin.fail() ||(data_pos > count || data_pos < 1)){
-            f = 1;
-            std::cout << "введите корректный номер: ";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        }
-    } while (f == 1);
+    //TODO: сделать более ООП коллбэк
+    console_in(data_pos,count, validReadCk);
     readLessonInfoFromFile(data_pos);
     std::cout << "введите любой символ, чтобы вернуться в меню...\n";
     std::scanf("%*s");
     std::getchar();
     return 0;
 }
+
+
+void SalaryHandler::console_in(int& var,int count, bool (*callback)(int, int)){
+    std::cin.clear();
+    int f {};
+    do{
+        f = 0;
+        std::cin >> var ;
+        if (std::cin.fail() || callback(count, var)){
+            f = 1;
+            std::cout << "введите коректное число: ";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    } while (f == 1);
+}
+void SalaryHandler::console_in(int& var, bool(*callback)(int)){
+    std::cin.clear();
+    int f {};
+    do {
+        f = 0;
+        std::cin >> var;
+        if(std::cin.fail() || callback(var)){
+            std::cout << var << '\n';
+            f = 1;
+            std::cout << "введи правильный тип урока\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    } while (f == 1);
+}
+
+bool validReadCk(int count, int in){return !(in >= 1 && in <= count);}
 
 int SalaryHandler::readLessonInfoFromFile(int l_pos){
     std::ifstream dataFile("maindata.txt", std::ios::in);
