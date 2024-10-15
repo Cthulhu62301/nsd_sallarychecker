@@ -43,8 +43,8 @@ enum Month
 
 struct Lesson
 {
-    Lesson (int number, Month mon, std::string date, LessonType type, unsigned int cost):number{number}, mon{mon}, date{date}, type{type}, cost{cost}{}
-    int number;
+    Lesson (int idx, Month mon, std::string date, LessonType type, unsigned int cost): idx{idx}, mon{mon}, date{date}, type{type}, cost{cost}{}
+    int idx;
     Month mon;
     std::string date;
     LessonType type;
@@ -57,6 +57,7 @@ public:
     void printLocalTime();
     void writeUserLessonInfo();
     int readUserLessonInfo();
+    int getMonth(std::string date);
 
 private:
     
@@ -69,6 +70,8 @@ private:
     void console_in(int& var, bool(*callback)(int));
     int writeLessonInfoToFile(std::string date, LessonType type);
     void encryptData();
+    
 };
 bool validReadCk(int count, int in);
 bool validInCk(int in);
+bool validDateCk(std::string date);

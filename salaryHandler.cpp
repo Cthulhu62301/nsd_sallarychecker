@@ -1,6 +1,8 @@
 #include "salaryHandler.h"
 
 
+//std::string::find - поиск подстроки
+
 void SalaryHandler::printLocalTime()
 {
 
@@ -15,11 +17,20 @@ void SalaryHandler::printLocalTime()
 
 void SalaryHandler::writeUserLessonInfo()
 {
+    int f{};
+    std::string date { };
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0
-
-    std::cout << "дата и время формата дд:мм чч:мм: ";
-    std::string date { }; 
-    std::getline(std::cin, date);
+    do {
+        f = 0;
+        std::cout << "дата и время формата дд.мм чч:мм: "; 
+        std::getline(std::cin, date);
+        if(!validDateCk(date)) {
+            f = 1;
+            std::cout << "введите в верном формате\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0
+        }
+    } while (f == 1);
 
     // Использовать std::endl не круто, т к он принудительно очищает буфер, что немного замедляет терминал
     // Лучше его не использовать, если нет на то везких причин
@@ -28,13 +39,28 @@ void SalaryHandler::writeUserLessonInfo()
     int input { };
     console_in(input, validInCk); 
     if (input == 0);
-    else if (input != 0) 
+    else if (input != 0)
+        
         writeLessonInfoToFile(date, static_cast<LessonType>(input - 1)); 
 }
 
 bool validInCk(int in){return !(in  >= 0 && in  <= LessonType::count);}
 
+bool validDateCk(std::string date){
+    //TODO: более строки условия валидации для даты и времени
+    bool f{
+        date.find('.', 2) != std::string::npos &&
+        date.find(':', 8) != std::string::npos &&
+        date.find(' ', 5) != std::string::npos &&
+        date.length() == 11 
+    };
+    return f;
+}
 
+int SalaryHandler::getMonth(std::string date){
+    std::string t_sub{date.substr(3,2)};
+    return static_cast<Month>(atoi(t_sub.c_str()));
+}
 
 // TODO: запись общей суммы за месяц в бинарный файл
 // помесячный учет полной суммы через бинарные файлы
@@ -115,7 +141,7 @@ void SalaryHandler::console_in(int& var, bool(*callback)(int)){
     } while (f == 1);
 }
 
-bool validReadCk(int count, int in){return !(in >= 1 && in <= count);}
+bool validReadCk(int count, int in){return !(in >= 1 && in <= count);} 
 
 int SalaryHandler::readLessonInfoFromFile(int l_pos){
     std::ifstream dataFile("maindata.txt", std::ios::in);
@@ -141,6 +167,6 @@ int SalaryHandler::readLessonInfoFromFile(int l_pos){
 
 
 void SalaryHandler::encryptData() {
-    //TODO: придумать архетиктуру файла данных
+    //TODO: прикрутить шифрование
 }
 
