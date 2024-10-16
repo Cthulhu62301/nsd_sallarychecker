@@ -7,7 +7,7 @@ void SalaryHandler::printLocalTime()
 {
 
     
-    std::time_t now = std::time(nullptr); // nullptr - это литерал указателя, лучше юзать его, вместо 0 или NULL (что тоже = 0)
+    std::time_t now = std::time(nullptr); 
     std::tm *local = std::localtime(&now);
 
     
@@ -17,49 +17,71 @@ void SalaryHandler::printLocalTime()
 
 void SalaryHandler::writeUserLessonInfo()
 {
-    int f{};
+    int error{};
+    int shouldExit{};
     std::string date { };
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0
     do {
-        f = 0;
-        std::cout << "дата и время формата дд.мм чч:мм: "; 
+        error = 0;
+        std::cout << "Для выхода введите q\nДата и время формата дд.мм чч:мм: "; 
         std::getline(std::cin, date);
-        if(!validDateCk(date)) {
-            f = 1;
-            std::cout << "введите в верном формате\n";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0
+        if (date == "q") {
+            shouldExit = 1;
         }
-    } while (f == 1);
+        else
+        if(!validDateCk(date)) {
+            error = 1;
+            std::cout << "Введите в верном формате\nНажмите любую кнопку,чтобы продолжить...";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+        }
+    } while (error == 1 || shouldExit == 1);
 
-    // Использовать std::endl не круто, т к он принудительно очищает буфер, что немного замедляет терминал
-    // Лучше его не использовать, если нет на то везких причин
-    // (Например, тебе надо быть уверенным, что ошибка выведется, перед тем, как прога крашнится)
-    std::cout << "выбери урок: \n1. пробный\n2. урок\n3. индивидуальное\n0. выйти в меню\nвыбор: ";
-    int input { };
-    console_in(input, validInCk); 
-    if (input == 0);
-    else if (input != 0)
-        
-        writeLessonInfoToFile(date, static_cast<LessonType>(input - 1)); 
+    //TODO: записывать структуры в файл и оттуда же их читать
+    //реализовать поиск по индексу, дате
+    //прикрутить сортировку по дате
+    if (shouldExit != 1){
+        std::cout << "выбери урок: \n1. пробный\n2. урок\n3. индивидуальное\n0. выйти в меню\nвыбор: ";
+        int input { };
+        console_in(input, validInCk); 
+        if (input == 0);
+        else if (input != 0)
+            
+            writeLessonInfoToFile(date, static_cast<LessonType>(input - 1)); 
+    }
 }
 
 bool validInCk(int in){return !(in  >= 0 && in  <= LessonType::count);}
 
 bool validDateCk(std::string date){
-    //TODO: более строки условия валидации для даты и времени
+    //TODO: проверка на 28, 29, 30, 31 дней в месяце
+    //возможно сделать структуру под время и записывать ее в бинарник
+    if(date.length() != 11){
+        std::cout << date.length() << '\n';
+        return false;
+        }
+    std::string month{date.substr(3,2)};
+    std::string day{date.substr(0,2)};
+    std::string min{date.substr(9,2)};
+    std::string hour{date.substr(6,2)};
+    bool b_month {(atoi(month.c_str()) > 0 && atoi(month.c_str()) <= 12)};
+    bool b_day{(atoi(day.c_str()) > 0 && atoi(day.c_str()) <= 31)};
+    bool b_min{(atoi(min.c_str()) >= 0 && atoi(min.c_str()) <= 60)};
+    bool b_hour{(atoi(hour.c_str())>= 0 && atoi(hour.c_str()) <= 23)};
+    std::cout << day << ' ' << month << ' ' << hour << ' ' << min << '\n';
+    std::cout << b_month <<' '<< b_day <<' '<<b_hour<<' '<<b_min<<'\n';
     bool f{
         date.find('.', 2) != std::string::npos &&
         date.find(':', 8) != std::string::npos &&
         date.find(' ', 5) != std::string::npos &&
-        date.length() == 11 
+        b_month && b_day && b_min && b_hour 
     };
     return f;
 }
 
 int SalaryHandler::getMonth(std::string date){
     std::string t_sub{date.substr(3,2)};
-    return static_cast<Month>(atoi(t_sub.c_str()));
+    return (atoi(t_sub.c_str()));
 }
 
 // TODO: запись общей суммы за месяц в бинарный файл
@@ -68,36 +90,25 @@ int SalaryHandler::getMonth(std::string date){
 int SalaryHandler::writeLessonInfoToFile(std::string date, LessonType lessonType)
 {
     std::fstream dataFile("maindata.txt", std::ios::app);
-    if (!dataFile.is_open())
-        return 1;
-
-    
-    dataFile << date << ' ';
+    if (!dataFile.is_open()) return 1;
+    int count {getCountOfData()};
+    dataFile << count + 1 << ' ' << date << ' ';
     if (lessonType == LessonType::trial)
-        dataFile << "пробный " << lessonsCost[trial];
+        dataFile  << " пробный " << lessonsCost[trial];
     else if (lessonType == LessonType::lesson)
-        dataFile << "урок " << lessonsCost[lesson];
+        dataFile  << " урок " << lessonsCost[lesson];
     else if (lessonType == LessonType::indiv)
-        dataFile << "индив " << lessonsCost[indiv];
+        dataFile  << " индив " << lessonsCost[indiv];
     dataFile << '\n';
 
     dataFile.close();
+    // Lesson n{1, getMonth(date), date, lessonType, lessonsCost[lessonType]};
     return 0;
 }
 
 int SalaryHandler::readUserLessonInfo(){
     int data_pos {};
-    int count {};
-    std::string data_store;
-    std::ifstream data_count("maindata.txt", std::ios::in);
-    if (!data_count.is_open()){
-        std::cout << "can't open file, try again\n";
-        return 1;
-    }
-    while (getline(data_count, data_store)){
-        count++;
-    }
-    data_count.close();
+    int count {getCountOfData()};
     std::cout << "количество записей: " << count << '\n';
     std::cout << "выберете номер записи: ";
     std::cin.clear();
@@ -110,7 +121,20 @@ int SalaryHandler::readUserLessonInfo(){
     return 0;
 }
 
-
+int SalaryHandler::getCountOfData(){
+    std::ifstream data_count("maindata.txt", std::ios::in);
+    if (!data_count.is_open()){
+        std::cout << "Can't open file, try again\n";
+        return -1;
+    }
+    std::string data_store;
+    int count{};
+    while (getline(data_count, data_store)){
+        count++;
+    }
+    data_count.close();
+    return count;
+}
 void SalaryHandler::console_in(int& var,int count, bool (*callback)(int, int)){
     std::cin.clear();
     int f {};
@@ -164,7 +188,14 @@ int SalaryHandler::readLessonInfoFromFile(int l_pos){
 }
 
 
-
+int SalaryHandler::writeLessonInfoToBin(std::string date, LessonType type, int count){
+    L_date dtmp {date};
+    Lesson tmp {count, dtmp, type, lessonsCost[type]};
+    std::fstream file {"bin_data.dat", std::ios::app | std::ios::binary};
+    for(size_t i{}; i < sizeof(Lesson); i++){
+        
+    }
+}
 
 void SalaryHandler::encryptData() {
     //TODO: прикрутить шифрование

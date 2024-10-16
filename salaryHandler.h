@@ -41,13 +41,31 @@ enum Month
     Dec,
 };
 
+struct L_date
+{
+    L_date(std::string date) 
+    {
+        std::string m{date.substr(0,2)};
+        std::string d{date.substr(3,2)};
+        std::string mn{date.substr(6,2)};
+        std::string h{date.substr(9,2)};
+        this->month = atoi(m.c_str());
+        this->day = atoi(d.c_str());
+        this->hour = atoi(h.c_str());
+        this->min = atoi(mn.c_str());
+    }
+    int month;
+    int day;
+    int hour;
+    int min;
+};
+
 struct Lesson
 {
-    Lesson (int idx, Month mon, std::string date, LessonType type, unsigned int cost): idx{idx}, mon{mon}, date{date}, type{type}, cost{cost}{}
+    Lesson (int idx, L_date date, int l_type, unsigned int cost): idx{idx}, date{date}, l_type{l_type}, cost{cost}{}
     int idx;
-    Month mon;
-    std::string date;
-    LessonType type;
+    L_date date;
+    int l_type;
     unsigned int cost;
 };
 
@@ -70,7 +88,8 @@ private:
     void console_in(int& var, bool(*callback)(int));
     int writeLessonInfoToFile(std::string date, LessonType type);
     void encryptData();
-    
+    int getCountOfData();
+    int writeLessonInfoToBin(std::string date, LessonType type, int count);
 };
 bool validReadCk(int count, int in);
 bool validInCk(int in);
