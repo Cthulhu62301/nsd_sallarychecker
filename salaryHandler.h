@@ -54,6 +54,7 @@ struct L_date
         this->hour = atoi(h.c_str());
         this->min = atoi(mn.c_str());
     }
+    L_date(){}
     int month;
     int day;
     int hour;
@@ -63,6 +64,7 @@ struct L_date
 struct Lesson
 {
     Lesson (int idx, L_date date, int l_type, unsigned int cost): idx{idx}, date{date}, l_type{l_type}, cost{cost}{}
+    Lesson (){}
     int idx;
     L_date date;
     int l_type;
@@ -75,8 +77,6 @@ public:
     void printLocalTime();
     void writeUserLessonInfo();
     int readUserLessonInfo();
-    int getMonth(std::string date);
-
 private:
     
     const unsigned int lessonsCost[LessonType::count] {500, 350, 450};
@@ -86,10 +86,12 @@ private:
     int readLessonInfoFromFile(int l_pos);
     void console_in(int& var, int count, bool (*callback)(int, int));
     void console_in(int& var, bool(*callback)(int));
+    void console_in(std::string& var, int& shouldExit); 
     int writeLessonInfoToFile(std::string date, LessonType type);
     void encryptData();
     int getCountOfData();
-    int writeLessonInfoToBin(std::string date, LessonType type, int count);
+    int getMonth(std::string date);
+    
 };
 bool validReadCk(int count, int in);
 bool validInCk(int in);

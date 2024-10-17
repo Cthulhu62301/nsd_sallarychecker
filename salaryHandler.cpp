@@ -21,7 +21,9 @@ void SalaryHandler::writeUserLessonInfo()
     int shouldExit{};
     std::string date { };
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0
+    //TODO: сделать выделенную функцию консольного ввода сюда
     do {
+
         error = 0;
         std::cout << "Для выхода введите q\nДата и время формата дд.мм чч:мм: "; 
         std::getline(std::cin, date);
@@ -36,7 +38,7 @@ void SalaryHandler::writeUserLessonInfo()
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
         }
     } while (error == 1 || shouldExit == 1);
-
+    // console_in(date, shouldExit);
     //TODO: записывать структуры в файл и оттуда же их читать
     //реализовать поиск по индексу, дате
     //прикрутить сортировку по дате
@@ -45,10 +47,30 @@ void SalaryHandler::writeUserLessonInfo()
         int input { };
         console_in(input, validInCk); 
         if (input == 0);
-        else if (input != 0)
-            
+        else if (input != 0){
             writeLessonInfoToFile(date, static_cast<LessonType>(input - 1)); 
+        }
     }
+}
+
+void SalaryHandler::console_in(std::string& date, int& shouldExit){
+    int error{};
+    do {
+
+        error = 0;
+        std::cout << "Для выхода введите q\nДата и время формата дд.мм чч:мм: "; 
+        std::getline(std::cin, date);
+        if (date == "q") {
+            shouldExit = 0;
+        }
+        else
+        if(!validDateCk(date)) {
+            error = 1;
+            std::cout << "Введите в верном формате\nНажмите любую кнопку,чтобы продолжить...";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+        }
+    } while (error == 1 || shouldExit == 1);
 }
 
 bool validInCk(int in){return !(in  >= 0 && in  <= LessonType::count);}
@@ -188,14 +210,7 @@ int SalaryHandler::readLessonInfoFromFile(int l_pos){
 }
 
 
-int SalaryHandler::writeLessonInfoToBin(std::string date, LessonType type, int count){
-    L_date dtmp {date};
-    Lesson tmp {count, dtmp, type, lessonsCost[type]};
-    std::fstream file {"bin_data.dat", std::ios::app | std::ios::binary};
-    for(size_t i{}; i < sizeof(Lesson); i++){
-        
-    }
-}
+
 
 void SalaryHandler::encryptData() {
     //TODO: прикрутить шифрование
