@@ -17,28 +17,28 @@ void SalaryHandler::printLocalTime()
 
 void SalaryHandler::writeUserLessonInfo()
 {
-    int error{};
+    // int error{};
     int shouldExit{};
     std::string date { };
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0
     //TODO: сделать выделенную функцию консольного ввода сюда
-    do {
+    // do {
 
-        error = 0;
-        std::cout << "Для выхода введите q\nДата и время формата дд.мм чч:мм: "; 
-        std::getline(std::cin, date);
-        if (date == "q") {
-            shouldExit = 1;
-        }
-        else
-        if(!validDateCk(date)) {
-            error = 1;
-            std::cout << "Введите в верном формате\nНажмите любую кнопку,чтобы продолжить...";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
-        }
-    } while (error == 1 || shouldExit == 1);
-    // console_in(date, shouldExit);
+    //     error = 0;
+    //     std::cout << "Для выхода введите q\nДата и время формата дд.мм чч:мм: "; 
+    //     std::getline(std::cin, date);
+    //     if (date == "q") {
+    //         shouldExit = 1;
+    //     }
+    //     else
+    //     if(!validDateCk(date)) {
+    //         error = 1;
+    //         std::cout << "Введите в верном формате\nНажмите любую кнопку,чтобы продолжить...";
+    //         std::cin.clear();
+    //         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+    //     }
+    // } while (error == 1 || shouldExit == 1);
+    console_in(date, shouldExit);
     //TODO: записывать структуры в файл и оттуда же их читать
     //реализовать поиск по индексу, дате
     //прикрутить сортировку по дате
