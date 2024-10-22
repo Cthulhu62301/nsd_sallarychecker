@@ -80,9 +80,6 @@ public:
 private:
     
     const unsigned int lessonsCost[LessonType::count] {500, 350, 450};
-    // bool readValid = [](int count, int in) { return (in > count || in < 1);};
-    bool (*callback)(int, int);
-    void setCallback(bool(*fn)(int, int));
     int readLessonInfoFromFile(int l_pos);
     void console_in(int& var, int count, bool (*callback)(int, int));
     void console_in(int& var, bool(*callback)(int));

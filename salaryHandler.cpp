@@ -21,28 +21,13 @@ void SalaryHandler::writeUserLessonInfo()
     int shouldExit{};
     std::string date { };
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0
-    //TODO: сделать выделенную функцию консольного ввода сюда
-    // do {
-
-    //     error = 0;
-    //     std::cout << "Для выхода введите q\nДата и время формата дд.мм чч:мм: "; 
-    //     std::getline(std::cin, date);
-    //     if (date == "q") {
-    //         shouldExit = 1;
-    //     }
-    //     else
-    //     if(!validDateCk(date)) {
-    //         error = 1;
-    //         std::cout << "Введите в верном формате\nНажмите любую кнопку,чтобы продолжить...";
-    //         std::cin.clear();
-    //         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
-    //     }
-    // } while (error == 1 || shouldExit == 1);
+    
+    
     console_in(date, shouldExit);
     //TODO: записывать структуры в файл и оттуда же их читать
     //реализовать поиск по индексу, дате
     //прикрутить сортировку по дате
-    if (shouldExit != 1){
+    if (shouldExit == 1){
         std::cout << "выбери урок: \n1. пробный\n2. урок\n3. индивидуальное\n0. выйти в меню\nвыбор: ";
         int input { };
         console_in(input, validInCk); 
@@ -90,8 +75,6 @@ bool validDateCk(std::string date){
     bool b_day{(atoi(day.c_str()) > 0 && atoi(day.c_str()) <= 31)};
     bool b_min{(atoi(min.c_str()) >= 0 && atoi(min.c_str()) <= 60)};
     bool b_hour{(atoi(hour.c_str())>= 0 && atoi(hour.c_str()) <= 23)};
-    std::cout << day << ' ' << month << ' ' << hour << ' ' << min << '\n';
-    std::cout << b_month <<' '<< b_day <<' '<<b_hour<<' '<<b_min<<'\n';
     bool f{
         date.find('.', 2) != std::string::npos &&
         date.find(':', 8) != std::string::npos &&
