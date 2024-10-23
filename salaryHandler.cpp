@@ -5,12 +5,8 @@
 
 void SalaryHandler::printLocalTime()
 {
-
-    
     std::time_t now = std::time(nullptr); 
     std::tm *local = std::localtime(&now);
-
-    
     std::cout << "Local time: " << std::ctime(&now) << '\n';
     std::cout << "Time now: " << local->tm_hour << ':' << local->tm_min << ':' << local->tm_sec << "\n\n\n";
 }
@@ -20,9 +16,7 @@ void SalaryHandler::writeUserLessonInfo()
     // int error{};
     int shouldExit{};
     std::string date { };
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0
-    
-    
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0   
     consoleDateIn(date, shouldExit);
     //TODO: записывать структуры в файл и оттуда же их читать
     //реализовать поиск по индексу, дате
@@ -42,7 +36,6 @@ void SalaryHandler::writeUserLessonInfo()
 void SalaryHandler::consoleDateIn(std::string& date, int& shouldExit){
     int error{};
     do {
-
         error = 0;
         std::cout << "Для выхода введите q\nДата и время формата дд.мм чч:мм: "; 
         std::getline(std::cin, date);
@@ -64,10 +57,7 @@ bool SalaryHandler::validInCk(int in){return !(in  >= 0 && in  <= LessonType::co
 bool SalaryHandler::validDateCk(std::string date){
     //TODO: проверка на 28, 29, 30, 31 дней в месяце
     //возможно сделать структуру под время и записывать ее в бинарник
-    if(date.length() != 11){
-        std::cout << date.length() << '\n';
-        return false;
-        }
+    if(date.length() != 11) return false;
     std::string month{date.substr(3,2)};
     std::string day{date.substr(0,2)};
     std::string min{date.substr(9,2)};
@@ -106,7 +96,6 @@ int SalaryHandler::writeLessonInfoToFile(std::string date, LessonType lessonType
     else if (lessonType == LessonType::indiv)
         dataFile  << " индив " << lessonsCost[indiv];
     dataFile << '\n';
-
     dataFile.close();
     // Lesson n{1, getMonth(date), date, lessonType, lessonsCost[lessonType]};
     return 0;
@@ -130,7 +119,6 @@ int SalaryHandler::readUserLessonInfo(){
 }
 
 int SalaryHandler::writeLessonToBin(std::string date, LessonType type){
-    
     Lesson tmp(getCountOfData(), L_date(date), type, lessonsCost[type]);
     std::ofstream file("maindata.bin", std::ios::binary | std::ios::app);
     if (!file.is_open()){
@@ -142,7 +130,7 @@ int SalaryHandler::writeLessonToBin(std::string date, LessonType type){
     return 0;
 }
 
-int SalaryHandler::readLessonFromBin(int idx){
+int SalaryHandler::readLessonFromBin(unsigned int idx){
     Lesson tmp;
     std::ifstream file("maindata.bin", std::ios::binary);
     if (!file.is_open()){
@@ -237,7 +225,7 @@ int SalaryHandler::readLessonInfoFromFile(int l_pos){
         }
         i++;
     }
-    std::cout << "\n\n\n";
+    std::cout << "\n";
     std::cin.clear();
     dataFile.close();
     return 0;

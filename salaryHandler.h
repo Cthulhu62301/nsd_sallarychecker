@@ -90,7 +90,7 @@ private:
     int getCountOfData();
     int getMonth(std::string date);
     int writeLessonToBin(std::string date, LessonType Ltype);
-    int readLessonFromBin(int idx);
+    int readLessonFromBin(unsigned int idx);
     std::string getLType(Lesson* ptr);
     std::string formatMin(Lesson* ptr);
     bool validReadCk(int count, int in);
