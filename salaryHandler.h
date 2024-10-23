@@ -47,8 +47,8 @@ struct L_date
     {
         std::string m{date.substr(0,2)};
         std::string d{date.substr(3,2)};
-        std::string mn{date.substr(6,2)};
-        std::string h{date.substr(9,2)};
+        std::string mn{date.substr(9,2)};
+        std::string h{date.substr(6,2)};
         this->month = atoi(m.c_str());
         this->day = atoi(d.c_str());
         this->hour = atoi(h.c_str());
@@ -77,19 +77,24 @@ public:
     void printLocalTime();
     void writeUserLessonInfo();
     int readUserLessonInfo();
+    
 private:
     
     const unsigned int lessonsCost[LessonType::count] {500, 350, 450};
     int readLessonInfoFromFile(int l_pos);
-    void console_in(int& var, int count, bool (*callback)(int, int));
-    void console_in(int& var, bool(*callback)(int));
-    void console_in(std::string& var, int& shouldExit); 
+    void consoleReadIn(int& var, int count);
+    void consoleWriteIn(int& var);
+    void consoleDateIn(std::string& var, int& shouldExit); 
     int writeLessonInfoToFile(std::string date, LessonType type);
     void encryptData();
     int getCountOfData();
     int getMonth(std::string date);
-    
+    int writeLessonToBin(std::string date, LessonType Ltype);
+    int readLessonFromBin(int idx);
+    std::string getLType(Lesson* ptr);
+    std::string formatMin(Lesson* ptr);
+    bool validReadCk(int count, int in);
+    bool validInCk(int in);
+    bool validDateCk(std::string date);
 };
-bool validReadCk(int count, int in);
-bool validInCk(int in);
-bool validDateCk(std::string date);
+
