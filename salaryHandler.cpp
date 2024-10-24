@@ -101,13 +101,12 @@ int SalaryHandler::writeLessonInfoToFile(std::string date, LessonType lessonType
     return 0;
 }
 
-int SalaryHandler::readUserLessonInfo(){
+int SalaryHandler::readUserLessonIdx(){
     int data_pos {};
     int count {getCountOfData()};
     std::cout << "количество записей: " << count << '\n';
     std::cout << "выберете номер записи: ";
     std::cin.clear();
-    //TODO: сделать более ООП коллбэк
     consoleReadIn(data_pos,count);
     readLessonInfoFromFile(data_pos);
     std::cout << "\nчтение с бинарника\n";
@@ -117,6 +116,68 @@ int SalaryHandler::readUserLessonInfo(){
     std::getchar();
     return 0;
 }
+
+int SalaryHandler::readUserLessonDate(){
+    std::cin.clear();
+    // std::cin.ignore(std::numeric_limits<std::streamsize>::max());
+    std::string date;
+    int shouldExit {};
+    consoleDateIn(date, shouldExit);
+    std::cout << '\n';
+    std::ifstream file("maindata.bin", std::ios::binary);
+    if (!file.is_open()){
+        std::cout << "Can't open file\n";
+        return 1;
+    }
+    Lesson out;
+    std::cout << "Найденные уроки:\n";
+    if(shouldExit == 0){
+        int i{};
+        L_date tmp(date);
+        for (; i < getCountOfData(); i++){
+            out = readStruct(file);
+            if(out.date.month == tmp.month && out.date.day == tmp.day){
+                std::cout << getLType(&out) << ' ' << out.cost << " Рублей\n";
+            }
+        }
+        if (i == 0) std::cout << "Уроков не найдено\n";
+    }
+    return 0;
+}
+
+void SalaryHandler::readUserLessonUI(){
+    std::cout << "1. По индексу\n2. По дате\n3. По типу урока\nВыберите метод поиска: ";
+    std::cin.clear();
+    char UserIn{};
+    std::cin >> UserIn;
+    switch (UserIn){
+    case '1':
+        readUserLessonIdx();
+        break;
+    case '2':
+        std::cin.clear();
+        // TODO: исправить баг со входом
+        readUserLessonDate();
+        break;
+    case '3':
+        // TODO: сделать поиск по типу уроков
+        break;
+    default:
+        break;
+    }
+}
+
+Lesson readStruct(std::ifstream& file){
+    //TODO: сделать отдельную функцию чтения структуры из файла
+    Lesson out;
+    file.read(reinterpret_cast<char*>(&out), sizeof(Lesson));
+    if (file.fail()){
+        std::cout << "can't read file\n";
+    }
+    return out;
+}
+
+
 
 int SalaryHandler::writeLessonToBin(std::string date, LessonType type){
     Lesson tmp(getCountOfData(), L_date(date), type, lessonsCost[type]);
@@ -131,7 +192,6 @@ int SalaryHandler::writeLessonToBin(std::string date, LessonType type){
 }
 
 int SalaryHandler::readLessonFromBin(unsigned int idx){
-    Lesson tmp;
     std::ifstream file("maindata.bin", std::ios::binary);
     if (!file.is_open()){
         std::cout << "can't open file for reading\n";
@@ -140,11 +200,7 @@ int SalaryHandler::readLessonFromBin(unsigned int idx){
     if (idx > 0){
         file.seekg(sizeof(Lesson) * (idx - 1));
     }
-    file.read(reinterpret_cast<char*>(&tmp), sizeof(Lesson));
-    if(file.fail()){
-        std::cout << "read error\n";
-        return 1;
-    }
+    Lesson tmp = readStruct(file);
     std::cout << "Найденный урок: \n" << tmp.date.month << '.' << tmp.date.day << ' ' << tmp.date.hour << ':' << formatMin(&tmp) << ' ' 
     << getLType(&tmp) << ' ' << "\nСтоимость урока: " << tmp.cost << " Рублей\n";
     file.close();

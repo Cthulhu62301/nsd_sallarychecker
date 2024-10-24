@@ -76,7 +76,7 @@ class SalaryHandler
 public:
     void printLocalTime();
     void writeUserLessonInfo();
-    int readUserLessonInfo();
+    void readUserLessonUI();
     
 private:
     
@@ -84,6 +84,9 @@ private:
     int readLessonInfoFromFile(int l_pos);
     void consoleReadIn(int& var, int count);
     void consoleWriteIn(int& var);
+    int readUserLessonIdx();
+    int readUserLessonDate();
+    
     void consoleDateIn(std::string& var, int& shouldExit); 
     int writeLessonInfoToFile(std::string date, LessonType type);
     void encryptData();
@@ -98,3 +101,4 @@ private:
     bool validDateCk(std::string date);
 };
 
+Lesson readStruct(std::ifstream& file);
