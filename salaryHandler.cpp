@@ -209,32 +209,39 @@ int SalaryHandler::readUserLessonDate(){
 }
 
 void SalaryHandler::readUserLessonUI(){
-    std::cout << "1. По индексу\n2. По дате\n3. По типу урока\n4. Показать все\nВыберите метод поиска: ";
-    std::cin.clear();
-    char UserIn{};
-    std::cin >> UserIn;
-    switch (UserIn){
-    case '1':
-        readUserLessonIdx();
-        break;
-    case '2':
+    int shouldExit{};
+    do {
+        std::cout << "1. По индексу\n2. По дате\n3. По типу урока\n4. Показать все\n0. Выйти\nВыберите метод поиска: ";
         std::cin.clear();
-        // TODO: исправить баг со входом
-        readUserLessonDate();
-        break;
-    case '3':
-        // TODO: сделать поиск по типу уроков
-        break;
-    case '4':
-        readUserLessonShowAll();
-        break;
-    default:
-        break;
-    }
+        char UserIn{};
+        std::cin >> UserIn;
+        switch (UserIn){
+        case '1':
+            readUserLessonIdx();
+            break;
+        case '2':
+            std::cin.clear();
+            readUserLessonDate();
+            break;
+        case '3':
+            // TODO: сделать поиск по типу уроков
+            break;
+        case '4':
+            readUserLessonShowAll();
+            break;
+        case '0':
+            shouldExit = 1;
+            break;
+        default:
+            std::cout << "Введите корректную опцию\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            break;
+        }
+    } while (shouldExit == 0);
 }
 
 Lesson readStruct(std::ifstream& file){
-    //TODO: сделать отдельную функцию чтения структуры из файла
     Lesson out;
     file.read(reinterpret_cast<char*>(&out), sizeof(Lesson));
     if (file.fail()){
