@@ -11,6 +11,35 @@ void SalaryHandler::printLocalTime()
     std::cout << "Time now: " << local->tm_hour << ':' << local->tm_min << ':' << local->tm_sec << "\n\n\n";
 }
 
+void SalaryHandler::calculateSalaryUI(){
+    int shouldExit{};
+    do{
+        char Uinput{};
+        std::cout << "Выберите функцию: \n1. Посчитать зп за все время\n2. Посчитать за конкретный месяц\n3. Посчитать за две недели\n0. вернуться обратно\n";
+        std::cin.clear();
+        std::cin >> Uinput;
+        switch (Uinput)
+        {
+        case '1':
+            getFullPayment();
+            break;
+        case '2':
+            break;
+        case '3':
+            break;
+        case '0':
+            shouldExit = 1;
+            break;
+        default:
+            std::cout << "Выберите корректную опцию\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            break;
+        }
+
+    } while (shouldExit == 0);
+}
+
 void SalaryHandler::writeUserLessonInfo()
 {
     // int error{};
@@ -116,6 +145,25 @@ int SalaryHandler::getFullPayment(){
     return 0;
 }
 
+int SalaryHandler::readUserLessonShowAll(){
+    std::cout << "Все уроки: \n";
+    std::ifstream file("maindata.bin", std::ios::binary);
+    if (!file.is_open()){
+        std::cout << "Can't open file for read\n";
+        return 1;
+    }
+    else {
+        for (int i = 0; i < getCountOfData(); i++)
+        {
+            Lesson tmp = readStruct(file);
+            std::cout << tmp.date.month << '.' << tmp.date.day << ' ' << tmp.date.hour << ':' << formatMin(&tmp) << ' ' 
+            << getLType(&tmp) << ' ' << "\nСтоимость урока: " << tmp.cost << " Рублей\n\n";
+        }
+        file.close();
+        return 0;
+    }
+}
+
 int SalaryHandler::readUserLessonIdx(){
     int data_pos {};
     int count {getCountOfData()};
@@ -123,8 +171,6 @@ int SalaryHandler::readUserLessonIdx(){
     std::cout << "выберете номер записи: ";
     std::cin.clear();
     consoleReadIn(data_pos,count);
-    readLessonInfoFromFile(data_pos);
-    std::cout << "\nчтение с бинарника\n";
     readLessonFromBin(data_pos);
     std::cout << "введите любой символ, чтобы вернуться в меню...\n";
     std::scanf("%*s");
@@ -163,7 +209,7 @@ int SalaryHandler::readUserLessonDate(){
 }
 
 void SalaryHandler::readUserLessonUI(){
-    std::cout << "1. По индексу\n2. По дате\n3. По типу урока\nВыберите метод поиска: ";
+    std::cout << "1. По индексу\n2. По дате\n3. По типу урока\n4. Показать все\nВыберите метод поиска: ";
     std::cin.clear();
     char UserIn{};
     std::cin >> UserIn;
@@ -178,6 +224,9 @@ void SalaryHandler::readUserLessonUI(){
         break;
     case '3':
         // TODO: сделать поиск по типу уроков
+        break;
+    case '4':
+        readUserLessonShowAll();
         break;
     default:
         break;
@@ -239,14 +288,14 @@ std::string SalaryHandler::getLType(Lesson* ptr) {
 
 
 int SalaryHandler::getCountOfData(){
-    std::ifstream data_count("maindata.txt", std::ios::in);
+    std::ifstream data_count("maindata.bin", std::ios::binary);
     if (!data_count.is_open()){
         std::cout << "Can't open file, try again\n";
         return -1;
     }
-    std::string data_store;
+    Lesson data_store;
     int count{};
-    while (getline(data_count, data_store)){
+    while (data_count.read(reinterpret_cast<char*>(&data_store), sizeof(Lesson))){
         count++;
     }
     data_count.close();

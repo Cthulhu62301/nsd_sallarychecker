@@ -29,7 +29,7 @@ int main()
                 salaryHandler.readUserLessonUI();
                 break;
             case '4':
-                salaryHandler.getFullPayment();
+                salaryHandler.calculateSalaryUI();
                 break;
             default:
                 std::cout << "Введите корректную опцию \n\n" << std::endl;

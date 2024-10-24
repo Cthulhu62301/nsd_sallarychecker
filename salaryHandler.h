@@ -77,9 +77,9 @@ public:
     void printLocalTime();
     void writeUserLessonInfo();
     void readUserLessonUI();
-    int getFullPayment();
+    void calculateSalaryUI();
 private:
-    
+    int getFullPayment();
     const unsigned int lessonsCost[LessonType::count] {500, 350, 450};
     int readLessonInfoFromFile(int l_pos);
     void consoleReadIn(int& var, int count);
