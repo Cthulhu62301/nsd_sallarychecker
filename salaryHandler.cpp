@@ -16,7 +16,7 @@ void SalaryHandler::writeUserLessonInfo()
     // int error{};
     int shouldExit{};
     std::string date { };
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0   
+    // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0   
     consoleDateIn(date, shouldExit);
     //TODO: записывать структуры в файл и оттуда же их читать
     //реализовать поиск по индексу, дате
@@ -37,6 +37,7 @@ void SalaryHandler::consoleDateIn(std::string& date, int& shouldExit){
     int error{};
     do {
         error = 0;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Для выхода введите q\nДата и время формата дд.мм чч:мм: "; 
         std::getline(std::cin, date);
         if (date == "q") {
@@ -100,6 +101,20 @@ int SalaryHandler::writeLessonInfoToFile(std::string date, LessonType lessonType
     // Lesson n{1, getMonth(date), date, lessonType, lessonsCost[lessonType]};
     return 0;
 }
+int SalaryHandler::getFullPayment(){
+    std::ifstream file("maindata.bin", std::ios::binary);
+    if (!file.is_open()){
+        std::cout << "Can't open file for read\n";
+        return 1;
+    }
+    unsigned int salary{};
+    for(int i = 0; i < getCountOfData(); i++){
+        Lesson tmp = readStruct(file);
+        salary += tmp.cost;
+    }
+    std::cout << "Полная зарплата: " << salary << " Рублей\n";
+    return 0;
+}
 
 int SalaryHandler::readUserLessonIdx(){
     int data_pos {};
@@ -130,10 +145,11 @@ int SalaryHandler::readUserLessonDate(){
         return 1;
     }
     Lesson out;
-    std::cout << "Найденные уроки:\n";
+    L_date tmp(date);
+    std::cout << "Найденные уроки за " << tmp.month << '.' << tmp.day << ":\n";
     if(shouldExit == 0){
         int i{};
-        L_date tmp(date);
+        
         for (; i < getCountOfData(); i++){
             out = readStruct(file);
             if(out.date.month == tmp.month && out.date.day == tmp.day){
@@ -142,6 +158,7 @@ int SalaryHandler::readUserLessonDate(){
         }
         if (i == 0) std::cout << "Уроков не найдено\n";
     }
+    file.close();
     return 0;
 }
 

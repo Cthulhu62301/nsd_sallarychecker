@@ -77,7 +77,7 @@ public:
     void printLocalTime();
     void writeUserLessonInfo();
     void readUserLessonUI();
-    
+    int getFullPayment();
 private:
     
     const unsigned int lessonsCost[LessonType::count] {500, 350, 450};
@@ -86,7 +86,7 @@ private:
     void consoleWriteIn(int& var);
     int readUserLessonIdx();
     int readUserLessonDate();
-    
+    int readUserLessonShowAll();
     void consoleDateIn(std::string& var, int& shouldExit); 
     int writeLessonInfoToFile(std::string date, LessonType type);
     void encryptData();

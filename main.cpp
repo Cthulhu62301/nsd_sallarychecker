@@ -11,7 +11,7 @@ int main()
     do {
         shouldExit = 0;
         salaryHandler.printLocalTime();
-        std::cout << "1. обновить время\n2. внести урок\n3. просмотреть уроки\nq. выход\nВыберите опцию: ";
+        std::cout << "1. обновить время\n2. внести урок\n3. просмотреть уроки\n4. посчитать зарплату\nq. выход\nВыберите опцию: ";
         std::cin >> userChoise;
         std::cout << '\n';
         switch (userChoise)
@@ -27,6 +27,9 @@ int main()
                 break;
             case '3':
                 salaryHandler.readUserLessonUI();
+                break;
+            case '4':
+                salaryHandler.getFullPayment();
                 break;
             default:
                 std::cout << "Введите корректную опцию \n\n" << std::endl;
