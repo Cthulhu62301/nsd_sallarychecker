@@ -141,7 +141,7 @@ int SalaryHandler::getFullPayment(){
         Lesson tmp = readStruct(file);
         salary += tmp.cost;
     }
-    std::cout << "Полная зарплата: " << salary << " Рублей\n";
+    std::cout << "Заработано за " << getCountOfData() << " уроков: " << salary << " Рублей\n";
     return 0;
 }
 
@@ -194,18 +194,51 @@ int SalaryHandler::readUserLessonDate(){
     L_date tmp(date);
     std::cout << "Найденные уроки за " << tmp.month << '.' << tmp.day << ":\n";
     if(shouldExit == 0){
-        int i{};
+        int count{};
         
-        for (; i < getCountOfData(); i++){
+        for (int i{}; i < getCountOfData(); i++){
             out = readStruct(file);
             if(out.date.month == tmp.month && out.date.day == tmp.day){
-                std::cout << getLType(&out) << ' ' << out.cost << " Рублей\n";
+                std::cout << out.date.hour << ':' << formatMin(&out) << ' ' << getLType(&out) << ' ' << out.cost << " Рублей\n";
+                count++;
             }
         }
-        if (i == 0) std::cout << "Уроков не найдено\n";
+        if (count == 0) std::cout << "Уроков не найдено\n";
     }
     file.close();
     return 0;
+}
+
+int SalaryHandler::readUserLessonType(){
+    std::cin.clear();
+    std::cout << "\n1. Пробный\n2. Урок\n3. Индивидуальный\n0. Вернуться\nВыберите тип урока: ";
+    int Uinput{};
+    std::cin >> Uinput;
+    std::ifstream file("maindata.bin", std::ios::binary);
+    if(!file.is_open()){
+        std::cout << "Can't open file for read\n";
+        return 1;
+    }
+    else
+    if(Uinput == 0) {
+        file.close();
+        return 0;
+    }
+    else{
+        int count {};
+        std::cout << "Даты проведения найденых уроков: \n";
+        for (int i {}; i < getCountOfData(); i++){
+            Lesson tmp = readStruct(file);
+            if (tmp.l_type == Uinput - 1) {
+                std::cout << tmp.date.month << '.' << tmp.date.day << ' ' << tmp.date.hour << ':' << formatMin(&tmp) << '\n';
+                count++;
+            }
+        }
+        if(count == 0){std::cout << "Уроков не найдено\n";}
+        else std::cout << "Найдено уроков: " << count << "\n\n";
+        file.close();
+        return 0;
+    }
 }
 
 void SalaryHandler::readUserLessonUI(){
@@ -224,7 +257,7 @@ void SalaryHandler::readUserLessonUI(){
             readUserLessonDate();
             break;
         case '3':
-            // TODO: сделать поиск по типу уроков
+            readUserLessonType();
             break;
         case '4':
             readUserLessonShowAll();
@@ -285,6 +318,7 @@ std::string SalaryHandler::formatMin(Lesson* ptr){
     else out = ptr->date.min;
     return out;
 }
+// TODO: переписать под обычный инт
 std::string SalaryHandler::getLType(Lesson* ptr) {
     std::string out;
     if (ptr->l_type == 0) out = "Пробный";

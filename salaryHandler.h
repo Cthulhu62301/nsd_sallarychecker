@@ -86,6 +86,7 @@ private:
     void consoleWriteIn(int& var);
     int readUserLessonIdx();
     int readUserLessonDate();
+    int readUserLessonType();
     int readUserLessonShowAll();
     void consoleDateIn(std::string& var, int& shouldExit); 
     int writeLessonInfoToFile(std::string date, LessonType type);
