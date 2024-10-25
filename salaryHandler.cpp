@@ -167,6 +167,7 @@ int SalaryHandler::readUserLessonShowAll(){
 int SalaryHandler::readUserLessonIdx(){
     int data_pos {};
     int count {getCountOfData()};
+    if(count == -1) return 1;
     std::cout << "количество записей: " << count << '\n';
     std::cout << "выберете номер записи: ";
     std::cin.clear();
@@ -315,7 +316,7 @@ int SalaryHandler::readLessonFromBin(unsigned int idx){
 std::string SalaryHandler::formatMin(Lesson* ptr){
     std::string out;
     if (ptr->date.min == 0) out = "00";
-    else out = ptr->date.min;
+    else out = std::to_string(ptr->date.min);
     return out;
 }
 // TODO: переписать под обычный инт
