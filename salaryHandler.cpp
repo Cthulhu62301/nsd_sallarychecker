@@ -2,6 +2,7 @@
 
 
 //std::string::find - поиск подстроки
+//TODO: рефакторинг
 
 void SalaryHandler::printLocalTime()
 {
@@ -46,10 +47,10 @@ void SalaryHandler::writeUserLessonInfo()
     int shouldExit{};
     std::string date { };
     // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // getline() ложится, если не чистить буфер 0_0   
-    consoleDateIn(date, shouldExit);
-    //TODO: записывать структуры в файл и оттуда же их читать
-    //реализовать поиск по индексу, дате
-    //прикрутить сортировку по дате
+    // consoleDateIn(date, shouldExit, Writer);
+    std::cout << "Формат \"дд.мм чч:мм\"\n0. Выход\n";
+    consoleDateIn2(date, Writer, shouldExit);
+    //TODO: прикрутить сортировку по дате
     if (shouldExit == 0){
         std::cout << "выбери урок: \n1. пробный\n2. урок\n3. индивидуальное\n0. выйти в меню\nвыбор: ";
         int input { };
@@ -62,46 +63,60 @@ void SalaryHandler::writeUserLessonInfo()
     }
 }
 
-void SalaryHandler::consoleDateIn(std::string& date, int& shouldExit){
+
+void SalaryHandler::consoleDateIn2(std::string& date, DMode mode, int& shouldExit){
     int error{};
+    std::cin.ignore(1, '\n');
     do {
         error = 0;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Для выхода введите q\nДата и время формата дд.мм чч:мм: "; 
+        std::cout << "Введите дату: ";
         std::getline(std::cin, date);
-        if (date == "q") {
-            shouldExit = 2;
+        if (date == "0") shouldExit = -1;
+        if (mode == Finder && shouldExit == 0){
+            if (!validDateCk(date, Finder)) error = 1;
         }
-        else
-        if(!validDateCk(date)) {
-            error = 1;
-            std::cout << "Введите в верном формате\nНажмите любую кнопку,чтобы продолжить...";
+        if (mode == Writer && shouldExit == 0){
+            if (!validDateCk(date, Writer)) error = 1;
+        }
+        if (error == 1){
+            std::cout << "Неверный формат даты\n";
             std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
         }
-    } while (error == 1 || shouldExit == 1);
+    } while (error == 1);
 }
 
 bool SalaryHandler::validInCk(int in){return !(in  >= 0 && in  <= LessonType::count);}
 
-bool SalaryHandler::validDateCk(std::string date){
+bool SalaryHandler::validDateCk(std::string date, DMode mode){
     //TODO: проверка на 28, 29, 30, 31 дней в месяце
     //возможно сделать структуру под время и записывать ее в бинарник
-    if(date.length() != 11) return false;
-    std::string month{date.substr(3,2)};
-    std::string day{date.substr(0,2)};
-    std::string min{date.substr(9,2)};
-    std::string hour{date.substr(6,2)};
-    bool b_month {(atoi(month.c_str()) > 0 && atoi(month.c_str()) <= 12)};
-    bool b_day{(atoi(day.c_str()) > 0 && atoi(day.c_str()) <= 31)};
-    bool b_min{(atoi(min.c_str()) >= 0 && atoi(min.c_str()) <= 60)};
-    bool b_hour{(atoi(hour.c_str())>= 0 && atoi(hour.c_str()) <= 23)};
-    bool f{
-        date.find('.', 2) != std::string::npos &&
-        date.find(':', 8) != std::string::npos &&
-        date.find(' ', 5) != std::string::npos &&
-        b_month && b_day && b_min && b_hour 
-    };
+    std::string month;
+    std::string day;
+    bool b_month;
+    bool b_day;
+    bool f{};
+    if (date.length() < 5) return false;
+    month = date.substr(3,2);
+    day = date.substr(0,2);
+    b_month  = (atoi(month.c_str()) > 0 && atoi(month.c_str()) <= 12);
+    b_day = (atoi(day.c_str()) > 0 && atoi(day.c_str()) <= 31);
+    if (mode == DMode::Writer){
+        if(date.length() != 11) return false;
+        std::string min{date.substr(9,2)};
+        std::string hour{date.substr(6,2)};
+        bool b_min{(atoi(min.c_str()) >= 0 && atoi(min.c_str()) <= 60)};
+        bool b_hour{(atoi(hour.c_str())>= 0 && atoi(hour.c_str()) <= 23)};
+        f = date.find('.', 2) != std::string::npos && 
+        date.find(':', 8) != std::string::npos && 
+        date.find(' ', 5) != std::string::npos && 
+        b_month && b_day && b_min && b_hour;
+    }
+    if (mode == DMode::Finder){
+        if(date.length() != 5) return false;
+        f = date.find('.', 2) != std::string::npos &&
+            b_month && b_day;
+        // return f;
+    }
     return f;
 }
 
@@ -184,19 +199,20 @@ int SalaryHandler::readUserLessonDate(){
     // std::cin.ignore(std::numeric_limits<std::streamsize>::max());
     std::string date;
     int shouldExit {};
-    consoleDateIn(date, shouldExit);
+    std::cout << "Формат \"мм.дд\"\n0. Выход\n";
+    consoleDateIn2(date, Finder, shouldExit);
     std::cout << '\n';
     std::ifstream file("maindata.bin", std::ios::binary);
     if (!file.is_open()){
         std::cout << "Can't open file\n";
         return 1;
     }
-    Lesson out;
-    L_date tmp(date);
-    std::cout << "Найденные уроки за " << tmp.month << '.' << tmp.day << ":\n";
+
     if(shouldExit == 0){
         int count{};
-        
+        Lesson out;
+        SalaryHandler::FDay tmp(date);
+        std::cout << "Найденные уроки за " << tmp.month << '.' << tmp.day << ":\n";
         for (int i{}; i < getCountOfData(); i++){
             out = readStruct(file);
             if(out.date.month == tmp.month && out.date.day == tmp.day){

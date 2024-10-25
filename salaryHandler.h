@@ -41,6 +41,12 @@ enum Month
     Dec,
 };
 
+enum DMode
+{
+    Finder,
+    Writer
+};
+
 struct L_date
 {
     L_date(std::string date) 
@@ -79,6 +85,17 @@ public:
     void readUserLessonUI();
     void calculateSalaryUI();
 private:
+    struct FDay
+    {
+        FDay(std::string date){
+            std::string m{date.substr(0,2)};
+            std::string d{date.substr(3,2)};
+            this->month = atoi(m.c_str());
+            this->day = atoi(d.c_str());
+        }
+        int month;
+        int day;
+    };
     int getFullPayment();
     const unsigned int lessonsCost[LessonType::count] {500, 350, 450};
     int readLessonInfoFromFile(int l_pos);
@@ -87,8 +104,8 @@ private:
     int readUserLessonIdx();
     int readUserLessonDate();
     int readUserLessonType();
-    int readUserLessonShowAll();
-    void consoleDateIn(std::string& var, int& shouldExit); 
+    int readUserLessonShowAll(); 
+    void consoleDateIn2(std::string& var, DMode mode, int& shouldExit);
     int writeLessonInfoToFile(std::string date, LessonType type);
     void encryptData();
     int getCountOfData();
@@ -99,7 +116,7 @@ private:
     std::string formatMin(Lesson* ptr);
     bool validReadCk(int count, int in);
     bool validInCk(int in);
-    bool validDateCk(std::string date);
+    bool validDateCk(std::string date, DMode mode);
 };
 
 Lesson readStruct(std::ifstream& file);
