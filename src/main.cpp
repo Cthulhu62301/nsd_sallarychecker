@@ -6,10 +6,10 @@ int main()
     SalaryHandler salaryHandler { };
     
 
-    int shouldExit; 
+    bool shouldExit; 
     char userChoise;
     do {
-        shouldExit = 0;
+        shouldExit = false;
         salaryHandler.printLocalTime();
         std::cout << "1. обновить время\n2. внести урок\n3. просмотреть уроки\n4. посчитать зарплату\nq. выход\nВыберите опцию: ";
         std::cin >> userChoise;
@@ -17,7 +17,7 @@ int main()
         switch (userChoise)
         {
             case 'q': 
-                shouldExit = 1; 
+                shouldExit = true; 
                 break;
             case '1': 
                 salaryHandler.printLocalTime();

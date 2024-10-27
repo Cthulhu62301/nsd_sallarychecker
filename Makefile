@@ -1,8 +1,15 @@
+SRC=$(wildcard src/*.cpp)
+FLAGS=-Wall -Werror -Wextra -I inc
+
+BIN_DIR=bin
+
 all:
-	g++ -Wall -Werror -Wextra salaryHandler.cpp main.cpp -o ./start.out
+	@mkdir -p $(BIN_DIR)
+	g++ $(FLAGS) $(SRC) -o $(BIN_DIR)/start.out
 
 rebuild: clean all
-	./start.out
+	$(BIN_DIR)/start.out
+
 clean:
-	rm -rf *.o
+	rm -rf $(BIN_DIR)
 	clear
